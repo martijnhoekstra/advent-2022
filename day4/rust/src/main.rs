@@ -1,43 +1,49 @@
-use std::{fs, u8};
-use std::collections::HashSet;
+use std::fs;
+
+fn input() -> String {
+   return fs::read_to_string("../input").expect("Should have been able to read the file");
+}
 
 fn part1() {
-    let file_path = "../input";
 
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+    let total: u32 = input().lines().map(|line| {
+      let mut parts = line.split(',').map(|part| part.split('-').map(|num| num.parse::<u32>().unwrap()));
+      let mut first = parts.next().unwrap();
+      let s1 = first.next().unwrap();
+      let e1 = first.next().unwrap();
+      let mut second = parts.next().unwrap();
+      let s2 = second.next().unwrap();
+      let e2 = second.next().unwrap();
+      
+      if s1 <= s2 && e1 >= e2 {1}
+      else if s2 <= s1 && e2 >= e1 {1}
+      else {0}
 
-    let total: u32 = contents.lines().map(|line| {
-      let at = line.len() / 2;
-      let (first, second) = line.split_at(at);
-      let front_compartment:HashSet<&u8> = HashSet::from_iter(first.as_bytes());
-      let hind_compartment: HashSet<&u8> = HashSet::from_iter(second.as_bytes());
-      let intersection = front_compartment.intersection(&hind_compartment);
-      intersection.map(|b| priority(**b)).sum::<u32>()
     }).sum();
 
-
-
-    println!("sum of prorities was {}", total);
+    println!("result 1 was {}", total);
 
 }
 
 fn part2() {
-    let file_path = "../input";
 
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+    let total: u32 = input().lines().map(|line| {
+      let mut parts = line.split(',').map(|part| part.split('-').map(|num| num.parse::<u32>().unwrap()));
+      let mut first = parts.next().unwrap();
+      let s1 = first.next().unwrap();
+      let e1 = first.next().unwrap();
+      let mut second = parts.next().unwrap();
+      let s2 = second.next().unwrap();
+      let e2 = second.next().unwrap();
+      
+      if e1 < s2 {0}
+      else if e2 < s1 {0}
+      else {1}
 
-    let line_iter = contents.lines();
-
-    let total: u32 = &line_iter.chunks(3).map(|line| {
-      let at = line.len() / 2;
-      let (first, second) = line.split_at(at);
-      let front_compartment:HashSet<&u8> = HashSet::from_iter(first.as_bytes());
-      let hind_compartment: HashSet<&u8> = HashSet::from_iter(second.as_bytes());
-      let intersection = front_compartment.intersection(&hind_compartment);
-      intersection.map(|b| priority(**b)).sum::<u32>()
     }).sum();
+
+    println!("result 2 was {}", total);
+
 }
 
 fn main() {
@@ -45,13 +51,3 @@ fn main() {
     part2();
 }
 
-fn priority(byte: u8) -> u32 {
-    // Uppercase item types A through Z have priorities 27 through 52.
-    if byte < 91 {
-        return (byte as u32) - 65 + 27;
-    }
-    // Lowercase item types a through z have priorities 1 through 26.
-    else {
-        return (byte as u32) - 97 + 1;
-    }
-}
