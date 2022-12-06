@@ -3,7 +3,6 @@ package advent
 import cats.syntax.all._
 import scala.io.Source
 import cats.Monoid
-import cats.data.State
 
 def in = Source.fromFile("../input")
 def instring = in.iterator.mkString("")
@@ -11,11 +10,11 @@ def lines = in.getLines().toList
 
 val Array(drawing, moveblock) = instring.split("\n\n")
 
-def parseRow(row: String): List[Option[Char]] = row.grouped(4).map(crate => Option(crate(1)).filter(ch => Character.isLetter(ch))).toList.padTo(3, None)
+def parseRow(row: String): List[Option[Char]] = row.grouped(4).map(crate => Option(crate(1)).filter(ch => Character.isLetter(ch))).toList
 
 val state = drawing.split('\n').toList.init.map(parseRow).transpose.map(_.collect { case Some(x) => x })
 
-def readState(state: Vector[List[Char]]) = state
+def printState(state: Vector[List[Char]]) = state
   .map(_.headOption.getOrElse(" "))
   .mkString("")
 
@@ -39,10 +38,10 @@ def part1 =
   val op = moves
     .flatMap { case (n, from, to) => List.fill(n)(1, from, to) }
     .foldMap(performMove.tupled)
-  println(readState(op(state.toVector)))
+  println(printState(op(state.toVector)))
 
 @main
 def part2 =
   val op = moves.foldMap(performMove.tupled)
   val endstate = op(state.toVector)
-  println(readState(endstate))
+  println(printState(endstate))
